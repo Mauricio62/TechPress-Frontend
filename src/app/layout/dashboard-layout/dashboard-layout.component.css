@@ -1,0 +1,19 @@
+.sidebar {
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+}
+
+.no-link-style {
+  text-decoration: none; 
+  color: inherit; 
+  cursor: pointer; 
+}
+
+.btn-outline-light {
+  transition: background-color 0.3s ease, color 0.3s ease; 
+}
+
+.btn-outline-light:hover {
+  background-color: red; 
+  color: white; 
+  border-color: red; 
+}

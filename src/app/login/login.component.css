@@ -1,0 +1,14 @@
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  }
+  
+
+.area-form-card {
+    width: 100%;
+    max-width: 400px;
+  }
+  
