@@ -22,6 +22,8 @@ export class AreaComponent implements OnInit {
   areas: Area[] = [];
   areaSeleccionada: Area = { nomarea: '' };
   mostrarFormulario: boolean = false;
+  filtro: string = '';
+
   private apiUrl = 'http://localhost:8080/api/areas';
 
   constructor(private http: HttpClient) {}
@@ -35,6 +37,16 @@ export class AreaComponent implements OnInit {
       next: data => this.areas = data,
       error: err => console.error('Error al cargar áreas:', err)
     });
+  }
+
+
+    obtenerAreasFiltradas(): Area[] {
+    if (!this.filtro) {
+      return this.areas;
+    }
+    const filtroLower = this.filtro.toLowerCase();
+    return this.areas.filter(area => area.nomarea.toLowerCase().includes(filtroLower) 
+    );
   }
 
   agregarArea() {

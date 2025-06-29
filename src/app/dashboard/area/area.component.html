@@ -1,6 +1,12 @@
 <div class="container">
   <h2 class="mb-4"><i class="fas fa-layer-group"></i> Gestión de Áreas</h2>
 
+
+  <!-- Input de búsqueda -->
+  <div class="mb-4">
+    <input type="text" class="form-control" placeholder="Buscar area..." [(ngModel)]="filtro" />
+  </div>
+  
   <!-- Botón Agregar -->
   <div class="mb-3">
     <button class="btn btn-primary" (click)="agregarArea()">
@@ -18,7 +24,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let area of areas">
+      <tr *ngFor="let area of obtenerAreasFiltradas()">
         <td>{{ area.id }}</td>
         <td>{{ area.nomarea }}</td>
         <td>
