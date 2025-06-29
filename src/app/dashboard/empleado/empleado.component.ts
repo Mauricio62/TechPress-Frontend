@@ -80,25 +80,62 @@ export class EmpleadoComponent implements OnInit {
     this.mostrarFormulario = true;
   }
 
-  guardarEmpleado() {
-    if (this.empleadoSeleccionado.id) {
-      this.http.put(`${this.apiUrl}/${this.empleadoSeleccionado.id}`, this.empleadoSeleccionado, { withCredentials: true }).subscribe({
-        next: () => {
-          this.mostrarFormulario = false;
-          this.listarEmpleados();
-        },
-        error: err => console.error('Error al actualizar empleado:', err)
-      });
-    } else {
-      this.http.post<Empleado>(this.apiUrl, this.empleadoSeleccionado, { withCredentials: true }).subscribe({
-        next: () => {
-          this.mostrarFormulario = false;
-          this.listarEmpleados();
-        },
-        error: err => console.error('Error al crear empleado:', err)
-      });
-    }
+guardarEmpleado() {
+  const { nombre, apellido, email, fecha_contrato, area } = this.empleadoSeleccionado;
+
+  if (!nombre?.trim() || !apellido?.trim() || !email?.trim() || !fecha_contrato?.trim() || !area?.id) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Campos incompletos',
+      text: 'Todos los campos son obligatorios, incluyendo el área.',
+    });
+    return;
   }
+
+  if (this.empleadoSeleccionado.id) {
+    // Editar
+    this.http.put(`${this.apiUrl}/${this.empleadoSeleccionado.id}`, this.empleadoSeleccionado, { withCredentials: true }).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Actualizado',
+          text: 'El empleado fue actualizado correctamente.'
+        });
+        this.mostrarFormulario = false;
+        this.listarEmpleados();
+      },
+      error: err => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al actualizar el empleado.'
+        });
+        console.error('Error al actualizar empleado:', err);
+      }
+    });
+  } else {
+    // Crear
+    this.http.post<Empleado>(this.apiUrl, this.empleadoSeleccionado, { withCredentials: true }).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Creado',
+          text: 'El empleado se creó correctamente.'
+        });
+        this.mostrarFormulario = false;
+        this.listarEmpleados();
+      },
+      error: err => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al crear el empleado.'
+        });
+        console.error('Error al crear empleado:', err);
+      }
+    });
+  }
+}
 
  
     eliminarEmpleado(id: number) {

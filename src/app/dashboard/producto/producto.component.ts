@@ -86,24 +86,62 @@ export class ProductoComponent implements OnInit {
   }
 
   guardarProducto() {
-    if (this.productoSeleccionado.id) {
-      this.http.put(`${this.apiUrl}/${this.productoSeleccionado.id}`, this.productoSeleccionado, { withCredentials: true }).subscribe({
-        next: () => {
-          this.mostrarFormulario = false;
-          this.listarProductos();
-        },
-        error: err => console.error('Error al actualizar producto:', err)
-      });
-    } else {
-      this.http.post<Producto>(this.apiUrl, this.productoSeleccionado, { withCredentials: true }).subscribe({
-        next: () => {
-          this.mostrarFormulario = false;
-          this.listarProductos();
-        },
-        error: err => console.error('Error al crear producto:', err)
-      });
-    }
+  const { nombre, precio, stock, categoria, proveedor } = this.productoSeleccionado;
+
+  if (!nombre.trim() || !precio || !stock || !categoria?.id || !proveedor?.id) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Campos incompletos',
+      text: 'Todos los campos son obligatorios para registrar el producto.'
+    });
+    return;
   }
+
+  if (this.productoSeleccionado.id) {
+    // Editar
+    this.http.put(`${this.apiUrl}/${this.productoSeleccionado.id}`, this.productoSeleccionado, { withCredentials: true }).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Actualizado',
+          text: 'El producto fue actualizado correctamente.'
+        });
+        this.mostrarFormulario = false;
+        this.listarProductos();
+      },
+      error: err => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Error al actualizar el producto.'
+        });
+        console.error('Error al actualizar producto:', err);
+      }
+    });
+  } else {
+    // Crear
+    this.http.post<Producto>(this.apiUrl, this.productoSeleccionado, { withCredentials: true }).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Creado',
+          text: 'El producto se creó correctamente.'
+        });
+        this.mostrarFormulario = false;
+        this.listarProductos();
+      },
+      error: err => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Error al crear el producto.'
+        });
+        console.error('Error al crear producto:', err);
+      }
+    });
+  }
+}
+
 
 
     eliminarProducto(id: number) {

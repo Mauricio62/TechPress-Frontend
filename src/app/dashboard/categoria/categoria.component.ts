@@ -47,27 +47,64 @@ export class CategoriaComponent implements OnInit {
     this.mostrarFormulario = true;
   }
 
-  guardarCategoria() {
-    if (this.categoriaSeleccionada.id) {
-      // Editar
-      this.http.put(`${this.apiUrl}/${this.categoriaSeleccionada.id}`, this.categoriaSeleccionada, { withCredentials: true }).subscribe({
-        next: () => {
-          this.mostrarFormulario = false;
-          this.listarCategorias();
-        },
-        error: err => console.error('Error al actualizar categoría:', err)
-      });
-    } else {
-      // Crear
-      this.http.post<Categoria>(this.apiUrl, this.categoriaSeleccionada, { withCredentials: true }).subscribe({
-        next: () => {
-          this.mostrarFormulario = false;
-          this.listarCategorias();
-        },
-        error: err => console.error('Error al crear categoría:', err)
-      });
-    }
+guardarCategoria() {
+  const nombre = this.categoriaSeleccionada.nombre?.trim();
+  const descripcion = this.categoriaSeleccionada.descripcion?.trim();
+
+  if (!nombre || !descripcion) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Campos vacíos',
+      text: 'El nombre y la descripción de la categoría son obligatorios.',
+    });
+    return;
   }
+
+  if (this.categoriaSeleccionada.id) {
+    // Editar
+    this.http.put(`${this.apiUrl}/${this.categoriaSeleccionada.id}`, this.categoriaSeleccionada, { withCredentials: true }).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Actualizado',
+          text: 'La categoría fue actualizada correctamente.'
+        });
+        this.mostrarFormulario = false;
+        this.listarCategorias();
+      },
+      error: err => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al actualizar la categoría.'
+        });
+        console.error('Error al actualizar categoría:', err);
+      }
+    });
+  } else {
+    // Crear
+    this.http.post<Categoria>(this.apiUrl, this.categoriaSeleccionada, { withCredentials: true }).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Creada',
+          text: 'La categoría se creó correctamente.'
+        });
+        this.mostrarFormulario = false;
+        this.listarCategorias();
+      },
+      error: err => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al crear la categoría.'
+        });
+        console.error('Error al crear categoría:', err);
+      }
+    });
+  }
+}
+
 
 
     eliminarCategoria(id: number) {

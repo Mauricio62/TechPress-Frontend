@@ -47,27 +47,62 @@ export class AreaComponent implements OnInit {
     this.mostrarFormulario = true;
   }
 
-  guardarArea() {
-    if (this.areaSeleccionada.id) {
-      // Editar
-      this.http.put(`${this.apiUrl}/${this.areaSeleccionada.id}`, this.areaSeleccionada, { withCredentials: true }).subscribe({
-        next: () => {
-          this.mostrarFormulario = false;
-          this.listarAreas();
-        },
-        error: err => console.error('Error al actualizar área:', err)
-      });
-    } else {
-      // Crear
-      this.http.post<Area>(this.apiUrl, this.areaSeleccionada, { withCredentials: true }).subscribe({
-        next: () => {
-          this.mostrarFormulario = false;
-          this.listarAreas();
-        },
-        error: err => console.error('Error al crear área:', err)
-      });
-    }
+guardarArea() {
+  const nombre = this.areaSeleccionada.nomarea?.trim();
+
+  if (!nombre) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Campo vacío',
+      text: 'El nombre del área es obligatorio.',
+    });
+    return;
   }
+
+  if (this.areaSeleccionada.id) {
+    // Editar
+    this.http.put(`${this.apiUrl}/${this.areaSeleccionada.id}`, this.areaSeleccionada, { withCredentials: true }).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Actualizado',
+          text: 'El área fue actualizada correctamente.',
+        });
+        this.mostrarFormulario = false;
+        this.listarAreas();
+      },
+      error: err => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al actualizar el área.'
+        });
+        console.error('Error al actualizar área:', err);
+      }
+    });
+  } else {
+    // Crear
+    this.http.post<Area>(this.apiUrl, this.areaSeleccionada, { withCredentials: true }).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Creado',
+          text: 'El área se creó correctamente.',
+        });
+        this.mostrarFormulario = false;
+        this.listarAreas();
+      },
+      error: err => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al crear el área.'
+        });
+        console.error('Error al crear área:', err);
+      }
+    });
+  }
+}
 
 
     eliminarArea(id: number) {

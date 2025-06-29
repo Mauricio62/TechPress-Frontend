@@ -29,6 +29,7 @@ export class ProveedorComponent implements OnInit {
   proveedores: Proveedor[] = [];
   proveedorSeleccionado: Proveedor = { nombre: '', telefono: '', email: '', ruc: '' };
   mostrarFormulario: boolean = false;
+
   private apiUrl = 'http://localhost:8080/api/proveedores';
 
   constructor(private http: HttpClient) {}
@@ -54,27 +55,64 @@ export class ProveedorComponent implements OnInit {
     this.mostrarFormulario = true;
   }
 
-  guardarProveedor() {
-    if (this.proveedorSeleccionado.id) {
-      // Editar
-      this.http.put(`${this.apiUrl}/${this.proveedorSeleccionado.id}`, this.proveedorSeleccionado, { withCredentials: true }).subscribe({
-        next: () => {
-          this.mostrarFormulario = false;
-          this.listarProveedores();
-        },
-        error: err => console.error('Error al actualizar proveedor:', err)
-      });
-    } else {
-      // Crear
-      this.http.post<Proveedor>(this.apiUrl, this.proveedorSeleccionado, { withCredentials: true }).subscribe({
-        next: () => {
-          this.mostrarFormulario = false;
-          this.listarProveedores();
-        },
-        error: err => console.error('Error al crear proveedor:', err)
-      });
-    }
+guardarProveedor() {
+  const { nombre, ruc, telefono } = this.proveedorSeleccionado;
+
+  // Validación 
+  if (!nombre?.trim() || !ruc?.trim() || !telefono?.trim()) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Campos incompletos',
+      text: 'Todos los campos son obligatorios para registrar el proveedor.'
+    });
+    return;
   }
+
+  if (this.proveedorSeleccionado.id) {
+    // Editar
+    this.http.put(`${this.apiUrl}/${this.proveedorSeleccionado.id}`, this.proveedorSeleccionado, { withCredentials: true }).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Actualizado',
+          text: 'El proveedor fue actualizado correctamente.'
+        });
+        this.mostrarFormulario = false;
+        this.listarProveedores();
+      },
+      error: err => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al actualizar el proveedor.'
+        });
+        console.error('Error al actualizar proveedor:', err);
+      }
+    });
+  } else {
+    // Crear
+    this.http.post<Proveedor>(this.apiUrl, this.proveedorSeleccionado, { withCredentials: true }).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Creado',
+          text: 'El proveedor se creó correctamente.'
+        });
+        this.mostrarFormulario = false;
+        this.listarProveedores();
+      },
+      error: err => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al crear el proveedor.'
+        });
+        console.error('Error al crear proveedor:', err);
+      }
+    });
+  }
+}
+
 
  
   eliminarProveedor(id: number | undefined) {
@@ -137,8 +175,8 @@ exportarPDF() {
   const doc = new jsPDF();
 
   // Configurar título centrado y con color
-  doc.setTextColor(44, 62, 80); // Establecer color oscuro
-  doc.setFontSize(16); // Tamaño más grande
+  doc.setTextColor(44, 62, 80); 
+  doc.setFontSize(16); 
   doc.text("Listado de Proveedores", doc.internal.pageSize.width / 2, 15, { align: "center" });
 
   // Configurar datos de la tabla
@@ -156,8 +194,8 @@ exportarPDF() {
     head: [columnas],
     body: filas,
     theme: 'grid',
-    headStyles: { fillColor: [44, 62, 80], textColor: 255 }, // Color oscuro en encabezado y texto blanco
-    startY: 20 // Posicionar tabla debajo del título
+    headStyles: { fillColor: [44, 62, 80], textColor: 255 }, 
+    startY: 20 
   });
 
   // Generar nombre dinámico para el archivo
