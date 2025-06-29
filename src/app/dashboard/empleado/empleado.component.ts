@@ -41,6 +41,8 @@ export class EmpleadoComponent implements OnInit {
     area: { id: 0, nomarea: '' }
   };
   mostrarFormulario: boolean = false;
+  filtro: string = '';
+
   private apiUrl = 'http://localhost:8080/api/empleados';
 
   constructor(private http: HttpClient) {}
@@ -56,6 +58,18 @@ export class EmpleadoComponent implements OnInit {
       error: err => console.error('Error al cargar empleados:', err)
     });
   }
+
+  obtenerEmpleadosFiltrados(): Empleado[] {
+  const filtroLower = this.filtro.toLowerCase();
+
+  return this.empleados.filter(e =>
+    e.nombre.toLowerCase().includes(filtroLower) ||
+    e.apellido.toLowerCase().includes(filtroLower) ||
+    e.email.toLowerCase().includes(filtroLower) ||
+    e.area?.nomarea.toLowerCase().includes(filtroLower) 
+  );
+}
+
 
   listarAreas() {
     this.http.get<{ id: number; nomarea: string }[]>('http://localhost:8080/api/areas', { withCredentials: true }).subscribe({

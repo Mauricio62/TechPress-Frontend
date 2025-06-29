@@ -1,14 +1,22 @@
 <div class="container mt-4">
   <h2 class="mb-3"><i class="fas fa-users"></i> Gestión de Empleados</h2>
 
-  <!-- Botón Agregar -->
-  <div class="mb-3">
-    <button class="btn btn-primary" (click)="agregarEmpleado()">
-      <i class="bi bi-plus-circle"></i> Agregar Empleado
-    </button>
+
+<!-- Input de búsqueda -->
+<div class="mb-4">
+  <input type="text" class="form-control" placeholder="Buscar empleado..." [(ngModel)]="filtro" />
+</div>
+
+<!-- Botones-->
+<div class="mb-3">
+  <button class="btn btn-primary" (click)="agregarEmpleado()">
+    <i class="bi bi-plus-circle"></i> Agregar Empleado
+  </button>
+
     <button class="btn btn-outline-danger ms-2" (click)="exportarPDF()">
       <i class="fas fa-file-pdf"></i> Exportar PDF
     </button>
+
     <button class="btn btn-outline-success ms-2" (click)="exportarExcel()">
       <i class="fas fa-file-excel"></i> Exportar Excel
     </button>
@@ -28,7 +36,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let empleado of empleados">
+      <tr *ngFor="let empleado of obtenerEmpleadosFiltrados()">
         <td>{{ empleado.id }}</td>
         <td>{{ empleado.nombre }}</td>
         <td>{{ empleado.apellido }}</td>
