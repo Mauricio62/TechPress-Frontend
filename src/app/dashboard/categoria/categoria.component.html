@@ -1,6 +1,13 @@
 <div class="container mt-4">
   <h2 class="mb-3"><i class="fas fa-folder-open"></i> Gestión de Categorías</h2>
 
+
+
+  <!-- Input de búsqueda -->
+  <div class="mb-4">
+    <input type="text" class="form-control" placeholder="Buscar categoria..." [(ngModel)]="filtro" />
+  </div>
+  
   <!-- Botón para agregar -->
   <div class="mb-3">
     <button class="btn btn-primary" (click)="agregarCategoria()">
@@ -21,7 +28,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let c of categorias">
+      <tr *ngFor="let c of obtenerCategoriasFiltradas()">
         <td>{{ c.id }}</td>
         <td>{{ c.nombre }}</td>
         <td>{{ c.descripcion }}</td>

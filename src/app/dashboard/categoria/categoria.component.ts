@@ -22,6 +22,8 @@ export class CategoriaComponent implements OnInit {
   categorias: Categoria[] = [];
   categoriaSeleccionada: Categoria = { nombre: '', descripcion: '' };
   mostrarFormulario: boolean = false;
+  filtro: string = '';
+
   private apiUrl = 'http://localhost:8080/api/categorias';
 
   constructor(private http: HttpClient) {}
@@ -35,6 +37,17 @@ export class CategoriaComponent implements OnInit {
       next: data => this.categorias = data,
       error: err => console.error('Error al cargar categorías:', err)
     });
+  }
+
+  obtenerCategoriasFiltradas(): Categoria[] {
+    if (!this.filtro) {
+      return this.categorias;
+    }
+    const filtroLower = this.filtro.toLowerCase();
+    return this.categorias.filter(categoria =>
+      categoria.nombre.toLowerCase().includes(filtroLower) ||
+      categoria.descripcion.toLowerCase().includes(filtroLower)
+    );
   }
 
   agregarCategoria() {
