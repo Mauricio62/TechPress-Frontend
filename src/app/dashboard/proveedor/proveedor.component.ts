@@ -29,6 +29,8 @@ export class ProveedorComponent implements OnInit {
   proveedores: Proveedor[] = [];
   proveedorSeleccionado: Proveedor = { nombre: '', telefono: '', email: '', ruc: '' };
   mostrarFormulario: boolean = false;
+  filtro: string = '';
+
 
   private apiUrl = 'http://localhost:8080/api/proveedores';
 
@@ -44,6 +46,20 @@ export class ProveedorComponent implements OnInit {
       error: err => console.error('Error al cargar proveedores:', err)
     });
   }
+
+  get proveedoresFiltrados(): Proveedor[] {
+  if (!this.filtro.trim()) {
+    return this.proveedores;
+  }
+  const texto = this.filtro.trim().toLowerCase();
+  return this.proveedores.filter(p =>
+    p.nombre.toLowerCase().includes(texto) ||
+    p.telefono.toLowerCase().includes(texto) ||
+    p.email.toLowerCase().includes(texto) ||
+    p.ruc.toLowerCase().includes(texto)
+  );
+}
+
 
   agregarProveedor() {
     this.proveedorSeleccionado = { nombre: '', telefono: '', email: '', ruc: '' }; // Limpiar datos
