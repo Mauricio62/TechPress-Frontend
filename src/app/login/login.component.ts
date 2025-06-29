@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../auth.service'; // Asegúrate de que la ruta es correcta
+import { AuthService } from '../auth.service'; 
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';  // Importa CommonModule aquí
+import { CommonModule } from '@angular/common';  
 
 
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, CommonModule], // Agrega CommonModule en imports
+  imports: [FormsModule, CommonModule], 
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -36,9 +36,9 @@ export class LoginComponent {
     this.authService.logout().subscribe({
       next: (response) => {
         console.log('Logout exitoso');
-        localStorage.removeItem('auth_token');  // Si usas localStorage
-        document.cookie = 'JSESSIONID=;expires=Thu, 01 Jan 1970 00:00:00 GMT'; // Elimina la cookie de sesión
-        this.router.navigate(['/login']);  // Redirige al login
+        localStorage.removeItem('auth_token'); 
+        document.cookie = 'JSESSIONID=;expires=Thu, 01 Jan 1970 00:00:00 GMT'; 
+        this.router.navigate(['/login']);  
       },
       error: (error) => {
         console.error('Error en el logout', error);
