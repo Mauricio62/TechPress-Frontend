@@ -44,6 +44,8 @@ export class ProductoComponent implements OnInit {
   proveedores: Proveedor[] = [];
   productoSeleccionado: Producto = { nombre: '', precio: 0, stock: 0, categoria: { nombre: '' }, proveedor: { nombre: '' } };
   mostrarFormulario: boolean = false;
+  filtro: string = '';
+
   private apiUrl = 'http://localhost:8080/api/productos';
 
   constructor(private http: HttpClient) {}
@@ -60,6 +62,19 @@ export class ProductoComponent implements OnInit {
       error: err => console.error('Error al cargar productos:', err)
     });
   }
+
+
+obtenerProductosFiltrados(): Producto[] {
+  const filtroLower = this.filtro.toLowerCase();
+
+  return this.productos.filter(p =>
+    p.nombre.toLowerCase().includes(filtroLower) ||
+    p.precio.toString().includes(filtroLower) ||
+    p.categoria?.nombre.toLowerCase().includes(filtroLower) ||
+    p.proveedor?.nombre.toLowerCase().includes(filtroLower)
+  );
+}
+
 
   listarCategorias() {
     this.http.get<Categoria[]>('http://localhost:8080/api/categorias', { withCredentials: true }).subscribe({
